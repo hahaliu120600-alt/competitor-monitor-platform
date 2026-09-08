@@ -4,10 +4,352 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>行业/竞品监测平台</title>
-    <meta http-equiv="refresh" content="0; url=dashboard.html">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .navbar { box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .card { border: none; box-shadow: 0 1px 3px rgba(0,0,0,0.12); margin-bottom: 1.5rem; }
+        .card:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .timeline-item { position: relative; padding-left: 0; }
+        .timeline-item:last-child { border-bottom: none !important; }
+    </style>
 </head>
 <body>
-    <p>正在跳转到平台...</p>
-    <p>如果没有自动跳转，请<a href="dashboard.html">点击这里</a></p>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-cloud-sun"></i> 行业/竞品监测平台
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">
+                            <i class="bi bi-speedometer2"></i> 概览
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-building"></i> ToB行业监测
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#subway">🚇 地铁行业</a></li>
+                            <li><a class="dropdown-item" href="#aviation">✈️ 航空行业</a></li>
+                            <li><a class="dropdown-item" href="#energy">⚡ 能源行业</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#competitors">
+                            <i class="bi bi-list-ul"></i> 天气App竞品
+                        </a>
+                    </li>
+                </ul>
+                <span class="navbar-text">
+                    <i class="bi bi-clock"></i> 最后采集: 2026-09-07
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="container-fluid mt-4">
+        <div class="row">
+            <!-- KPI卡片 -->
+            <div class="col-md-3 mb-4">
+                <div class="card text-white bg-primary">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-subtitle mb-2">监测竞品</h6>
+                                <h2 class="card-title mb-0">10</h2>
+                            </div>
+                            <i class="bi bi-eye fs-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-subtitle mb-2">本周更新</h6>
+                                <h2 class="card-title mb-0">4</h2>
+                            </div>
+                            <i class="bi bi-arrow-repeat fs-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="card text-white bg-info">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-subtitle mb-2">公司动态</h6>
+                                <h2 class="card-title mb-0">3</h2>
+                            </div>
+                            <i class="bi bi-newspaper fs-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="card text-white bg-warning">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-subtitle mb-2">行业情报</h6>
+                                <h2 class="card-title mb-0">10</h2>
+                            </div>
+                            <i class="bi bi-people fs-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 快速操作 -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">快速操作</h5>
+                        <button class="btn btn-primary" disabled>
+                            <i class="bi bi-arrow-clockwise"></i> 立即采集数据
+                        </button>
+                        <button class="btn btn-success" disabled>
+                            <i class="bi bi-file-earmark-plus"></i> 生成周报
+                        </button>
+                        <a href="https://github.com/hahaliu120600-alt/competitor-monitor-platform" target="_blank" class="btn btn-info">
+                            <i class="bi bi-folder"></i> 查看GitHub仓库
+                        </a>
+                        <small class="text-muted ms-3">💡 完整功能需下载运行</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- 最新动态 -->
+            <div class="col-md-8 mb-4">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clock-history"></i> 最新动态
+                        </h5>
+                    </div>
+                    <div class="card-body" style="max-height: 600px; overflow-y: auto;">
+                        <div class="timeline">
+                            <!-- 动态1 -->
+                            <div class="timeline-item mb-3 pb-3 border-bottom">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-arrow-repeat"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <strong>Windy</strong>
+                                                <span class="badge bg-light text-dark ms-2 small">版本更新</span>
+                                            </div>
+                                            <small class="text-muted">2026/9/6</small>
+                                        </div>
+                                        <div class="mt-2">
+                                            <strong>版本更新 vv48.0</strong>
+                                            <p class="text-muted small mb-1 mt-1">推出实时暴雨警报，社区用户高度评价</p>
+                                            <div class="mt-2">
+                                                <a href="https://community.windy.com" target="_blank" class="small text-primary text-decoration-none">
+                                                    <i class="bi bi-link-45deg"></i> 查看来源
+                                                    <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.8em;"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 动态2 -->
+                            <div class="timeline-item mb-3 pb-3 border-bottom">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-arrow-repeat"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <strong>The Weather Channel</strong>
+                                                <span class="badge bg-light text-dark ms-2 small">版本更新</span>
+                                            </div>
+                                            <small class="text-muted">2026/9/5</small>
+                                        </div>
+                                        <div class="mt-2">
+                                            <strong>版本更新 vv12.5.0</strong>
+                                            <p class="text-muted small mb-1 mt-1">推出增强型过敏指数预报体验</p>
+                                            <div class="mt-2">
+                                                <a href="https://weather.com/updates" target="_blank" class="small text-primary text-decoration-none">
+                                                    <i class="bi bi-link-45deg"></i> 查看来源
+                                                    <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.8em;"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 动态3 -->
+                            <div class="timeline-item mb-3 pb-3 border-bottom">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-arrow-repeat"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <strong>墨迹天气</strong>
+                                                <span class="badge bg-light text-dark ms-2 small">版本更新</span>
+                                            </div>
+                                            <small class="text-muted">2026/9/4</small>
+                                        </div>
+                                        <div class="mt-2">
+                                            <strong>版本更新 vv9.9.40</strong>
+                                            <p class="text-muted small mb-1 mt-1">持续强化"分钟级+公里级"精准预报能力</p>
+                                            <div class="mt-2">
+                                                <a href="https://moji.com" target="_blank" class="small text-primary text-decoration-none">
+                                                    <i class="bi bi-link-45deg"></i> 查看来源
+                                                    <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.8em;"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 动态4 -->
+                            <div class="timeline-item mb-3">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <span class="badge bg-info">
+                                            <i class="bi bi-newspaper"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <strong>AccuWeather</strong>
+                                                <span class="badge bg-light text-dark ms-2 small">公司动态</span>
+                                            </div>
+                                            <small class="text-muted">2026/9/2</small>
+                                        </div>
+                                        <div class="mt-2">
+                                            <strong>AccuWeather完成新一轮战略融资</strong>
+                                            <p class="text-muted small mb-1 mt-1">将用于AI气象预测技术研发和国际市场拓展</p>
+                                            <div class="mt-2">
+                                                <a href="https://accuweather.com/press" target="_blank" class="small text-primary text-decoration-none">
+                                                    <i class="bi bi-link-45deg"></i> 查看来源
+                                                    <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.8em;"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 竞品快览 -->
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-list-check"></i> 竞品快览
+                        </h5>
+                    </div>
+                    <div class="card-body" style="max-height: 600px; overflow-y: auto;">
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>The Weather Channel</strong>
+                                        <span class="badge bg-info ms-2">国际</span>
+                                        <br>
+                                        <small class="text-muted">vv12.5.0 | 1次更新/30天</small>
+                                    </div>
+                                    <i class="bi bi-chevron-right"></i>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>AccuWeather</strong>
+                                        <span class="badge bg-info ms-2">国际</span>
+                                        <br>
+                                        <small class="text-muted">vv8.3.1 | 1次更新/30天</small>
+                                    </div>
+                                    <i class="bi bi-chevron-right"></i>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>Windy</strong>
+                                        <span class="badge bg-info ms-2">国际</span>
+                                        <br>
+                                        <small class="text-muted">vv48.0 | 1次更新/30天</small>
+                                    </div>
+                                    <i class="bi bi-chevron-right"></i>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>墨迹天气</strong>
+                                        <span class="badge bg-primary ms-2">本品</span>
+                                        <br>
+                                        <small class="text-muted">vv9.9.40 | 1次更新/30天</small>
+                                    </div>
+                                    <i class="bi bi-chevron-right"></i>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer mt-5 py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">行业/竞品监测平台 &copy; 2026 |
+            <a href="https://github.com/hahaliu120600-alt/competitor-monitor-platform" target="_blank">GitHub</a>
+            </span>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
