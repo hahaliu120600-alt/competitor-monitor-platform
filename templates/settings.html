@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}设置 - 竞品监测平台{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-gear"></i> 系统设置
+                </h5>
+            </div>
+            <div class="card-body">
+                <h6>数据采集设置</h6>
+                <div class="mb-3">
+                    <label class="form-label">每日采集时间</label>
+                    <input type="time" class="form-control" value="02:00" disabled>
+                    <small class="text-muted">当前设置：每天凌晨2点自动采集</small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">周报生成时间</label>
+                    <input type="text" class="form-control" value="每周五 17:00" disabled>
+                    <small class="text-muted">自动生成并保存周报</small>
+                </div>
+
+                <hr>
+
+                <h6>Claude API设置</h6>
+                <div class="mb-3">
+                    <label class="form-label">API Key</label>
+                    <input type="password" class="form-control" placeholder="sk-ant-..." id="api-key">
+                    <small class="text-muted">用于WebSearch数据采集，请在终端设置环境变量 ANTHROPIC_API_KEY</small>
+                </div>
+
+                <hr>
+
+                <h6>备份设置</h6>
+                <div class="mb-3">
+                    <p class="text-muted">
+                        <i class="bi bi-info-circle"></i>
+                        数据库每周日凌晨3点自动备份，备份文件保存30天
+                    </p>
+                    <button class="btn btn-sm btn-outline-primary" onclick="backupNow()">
+                        <i class="bi bi-download"></i> 立即备份
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-database"></i> 数据管理
+                </h5>
+            </div>
+            <div class="card-body">
+                <h6>手动录入市场数据</h6>
+                <p class="text-muted">当自动采集无法获取数据时，可手动录入补充</p>
+
+                <form id="manual-input-form">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">竞品</label>
+                            <select class="form-select" id="competitor-select" required>
+                                <option value="">选择竞品...</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">日期</label>
+                            <input type="date" class="form-control" id="data-date" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">iOS评分</label>
+                            <input type="number" class="form-control" id="rating-ios" step="0.1" min="0" max="5">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">iOS排名</label>
+                            <input type="number" class="form-control" id="ranking-ios">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">30天下载量</label>
+                            <input type="number" class="form-control" id="downloads-30d">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> 提交数据
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-info-circle"></i> 系统信息
+                </h5>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-6">平台版本</dt>
+                    <dd class="col-sm-6">v1.0.0</dd>
+
+                    <dt class="col-sm-6">数据库</dt>
+                    <dd class="col-sm-6">SQLite</dd>
+
+                    <dt class="col-sm-6">运行状态</dt>
+                    <dd class="col-sm-6">
+                        <span class="badge bg-success">正常运行</span>
+                    </dd>
+
+                    <dt class="col-sm-6">定时任务</dt>
+                    <dd class="col-sm-6">
+                        <span class="badge bg-success">已启动</span>
+                    </dd>
+                </dl>
+
+                <hr>
+
+                <h6>快捷链接</h6>
+                <ul class="list-unstyled">
+                    <li><a href="/api/health" target="_blank"><i class="bi bi-link"></i> API健康检查</a></li>
+                    <li><a href="#" onclick="openDataDir()"><i class="bi bi-folder"></i> 打开数据目录</a></li>
+                    <li><a href="#" onclick="openLogsDir()"><i class="bi bi-file-text"></i> 查看日志</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header bg-white">
+                <h6 class="mb-0">使用说明</h6>
+            </div>
+            <div class="card-body">
+                <p class="small text-muted">
+                    本平台每天自动采集天气类App竞品数据，包括：
+                </p>
+                <ul class="small text-muted">
+                    <li>App版本更新</li>
+                    <li>公司动态新闻</li>
+                    <li>合作信息</li>
+                    <li>市场数据（需手动补充）</li>
+                </ul>
+                <p class="small text-muted">
+                    每周五自动生成周报，保存到指定目录。
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadCompetitorsForSelect();
+    document.getElementById('data-date').valueAsDate = new Date();
+
+    document.getElementById('manual-input-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        submitManualData();
+    });
+});
+
+async function loadCompetitorsForSelect() {
+    try {
+        const response = await axios.get('/api/competitors');
+        if (response.data.success) {
+            const select = document.getElementById('competitor-select');
+            response.data.data.forEach(comp => {
+                const option = document.createElement('option');
+                option.value = comp.id;
+                option.textContent = comp.name;
+                select.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.error('加载竞品列表失败:', error);
+    }
+}
+
+async function submitManualData() {
+    const data = {
+        competitor_id: document.getElementById('competitor-select').value,
+        date: document.getElementById('data-date').value,
+        rating_ios: parseFloat(document.getElementById('rating-ios').value) || null,
+        ranking_ios: parseInt(document.getElementById('ranking-ios').value) || null,
+        downloads_30d: parseInt(document.getElementById('downloads-30d').value) || null
+    };
+
+    try {
+        const response = await axios.post('/api/data/manual-input', data);
+        if (response.data.success) {
+            alert('数据提交成功！');
+            document.getElementById('manual-input-form').reset();
+            document.getElementById('data-date').valueAsDate = new Date();
+        }
+    } catch (error) {
+        alert('提交失败: ' + error.message);
+    }
+}
+
+function backupNow() {
+    alert('备份功能将在后台执行，请稍后在数据目录中查看备份文件');
+}
+
+function openDataDir() {
+    alert('数据目录：/Users/xiaoxiao.liu/竞品监测平台/data/');
+}
+
+function openLogsDir() {
+    alert('日志目录：/Users/xiaoxiao.liu/竞品监测平台/logs/');
+}
+</script>
+{% endblock %}

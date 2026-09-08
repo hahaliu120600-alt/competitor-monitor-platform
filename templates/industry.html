@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+
+{% block title %}ToB行业监测 - 行业/竞品监测平台{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card bg-gradient-primary text-white">
+            <div class="card-body">
+                <h4 class="mb-3">
+                    <i class="bi bi-building"></i> ToB行业气象情报监测
+                </h4>
+                <p class="mb-0">
+                    实时追踪地铁、航空、能源三大行业的气象相关政策、新闻和竞品动态
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 行业切换标签 -->
+<ul class="nav nav-tabs mb-4" id="industryTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all-content" type="button">
+            📊 全部行业
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="subway-tab" data-bs-toggle="tab" data-bs-target="#subway-content" type="button">
+            🚇 地铁行业
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="aviation-tab" data-bs-toggle="tab" data-bs-target="#aviation-content" type="button">
+            ✈️ 航空行业
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="energy-tab" data-bs-toggle="tab" data-bs-target="#energy-content" type="button">
+            ⚡ 能源行业
+        </button>
+    </li>
+</ul>
+
+<!-- 标签内容 -->
+<div class="tab-content" id="industryTabContent">
+    <!-- 全部行业 -->
+    <div class="tab-pane fade show active" id="all-content">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h6 class="mb-0">🚇 地铁行业</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="small text-muted">
+                            <strong>关注点：</strong>各省一线城市地铁与气象结合需求（防汛、防灾、智能调度）
+                        </p>
+                        <p class="small"><strong>竞品：</strong>华风气象、华云气象</p>
+                        <div id="subway-summary" class="mt-3">
+                            <div class="spinner-border spinner-border-sm" role="status"></div>
+                            <span class="small">加载中...</span>
+                        </div>
+                        <a href="#" class="btn btn-sm btn-outline-primary mt-3" onclick="loadIndustryDetail('subway')">查看详情</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card border-info">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0">✈️ 航空行业</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="small text-muted">
+                            <strong>关注点：</strong>各航空公司与气象相关新闻（航班延误、航路气象服务）
+                        </p>
+                        <p class="small"><strong>竞品：</strong>WNI（日本气象新闻）</p>
+                        <div id="aviation-summary" class="mt-3">
+                            <div class="spinner-border spinner-border-sm" role="status"></div>
+                            <span class="small">加载中...</span>
+                        </div>
+                        <a href="#" class="btn btn-sm btn-outline-info mt-3" onclick="loadIndustryDetail('aviation')">查看详情</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card border-warning">
+                    <div class="card-header bg-warning">
+                        <h6 class="mb-0">⚡ 能源行业</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="small text-muted">
+                            <strong>关注点：</strong>能源（风电、光伏、电网）与气象相关的政策、技术动态
+                        </p>
+                        <p class="small"><strong>竞品：</strong>国能日新、东润环能、金风科技、远景能源</p>
+                        <div id="energy-summary" class="mt-3">
+                            <div class="spinner-border spinner-border-sm" role="status"></div>
+                            <span class="small">加载中...</span>
+                        </div>
+                        <a href="#" class="btn btn-sm btn-outline-warning mt-3" onclick="loadIndustryDetail('energy')">查看详情</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <button class="btn btn-primary" onclick="collectIndustryNews()">
+                            <i class="bi bi-arrow-repeat"></i> 立即采集行业情报
+                        </button>
+                        <button class="btn btn-success" onclick="generateIndustryReport()">
+                            <i class="bi bi-file-earmark-text"></i> 生成行业周报
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 地铁行业详情 -->
+    <div class="tab-pane fade" id="subway-content">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">🚇 地铁行业情报</h5>
+            </div>
+            <div class="card-body" id="subway-detail">
+                <p class="text-muted">加载中...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 航空行业详情 -->
+    <div class="tab-pane fade" id="aviation-content">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">✈️ 航空行业情报</h5>
+            </div>
+            <div class="card-body" id="aviation-detail">
+                <p class="text-muted">加载中...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 能源行业详情 -->
+    <div class="tab-pane fade" id="energy-content">
+        <div class="card">
+            <div class="card-header bg-warning">
+                <h5 class="mb-0">⚡ 能源行业情报</h5>
+            </div>
+            <div class="card-body" id="energy-detail">
+                <p class="text-muted">加载中...</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadAllIndustriesSummary();
+
+    // 标签切换时加载详情
+    document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(button => {
+        button.addEventListener('shown.bs.tab', function (event) {
+            const target = event.target.getAttribute('data-bs-target');
+            if (target.includes('subway')) loadIndustryDetail('subway');
+            if (target.includes('aviation')) loadIndustryDetail('aviation');
+            if (target.includes('energy')) loadIndustryDetail('energy');
+        });
+    });
+});
+
+async function loadAllIndustriesSummary() {
+    const industries = ['subway', 'aviation', 'energy'];
+
+    for (const industry of industries) {
+        try {
+            const response = await axios.get(`/api/industry/${industry}/summary`);
+            if (response.data.success) {
+                const data = response.data.data;
+                const summaryEl = document.getElementById(`${industry}-summary`);
+
+                summaryEl.innerHTML = `
+                    <div class="small">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>📰 最新新闻</span>
+                            <span class="badge bg-primary">${data.news_count || 0}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>📋 政策更新</span>
+                            <span class="badge bg-success">${data.policy_count || 0}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>🏢 竞品动态</span>
+                            <span class="badge bg-info">${data.competitor_count || 0}</span>
+                        </div>
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error(`加载${industry}摘要失败:`, error);
+            document.getElementById(`${industry}-summary`).innerHTML =
+                '<p class="small text-danger">暂无数据</p>';
+        }
+    }
+}
+
+async function loadIndustryDetail(industry) {
+    const detailEl = document.getElementById(`${industry}-detail`);
+    detailEl.innerHTML = '<div class="text-center py-5"><div class="spinner-border"></div></div>';
+
+    try {
+        const response = await axios.get(`/api/industry/${industry}/news`);
+        if (response.data.success) {
+            const news = response.data.data;
+
+            if (news.length === 0) {
+                detailEl.innerHTML = '<p class="text-muted">暂无情报数据，请点击"立即采集行业情报"</p>';
+                return;
+            }
+
+            let html = '';
+            const categories = {
+                news: { title: '最新新闻', icon: '📰', color: 'primary' },
+                policy: { title: '政策更新', icon: '📋', color: 'success' },
+                competitor: { title: '竞品动态', icon: '🏢', color: 'info' }
+            };
+
+            // 按类别分组
+            const grouped = {};
+            news.forEach(item => {
+                if (!grouped[item.category]) grouped[item.category] = [];
+                grouped[item.category].push(item);
+            });
+
+            // 渲染各类别
+            for (const [category, items] of Object.entries(grouped)) {
+                const cat = categories[category] || categories.news;
+                html += `<h6 class="mt-4">${cat.icon} ${cat.title}</h6>`;
+                html += '<div class="list-group">';
+
+                items.forEach(item => {
+                    html += `
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">${item.title}</h6>
+                                    <p class="mb-1 small text-muted">${item.content}</p>
+                                    ${item.source ? `<a href="${item.source}" target="_blank" class="small">来源 <i class="bi bi-box-arrow-up-right"></i></a>` : ''}
+                                </div>
+                                <span class="badge bg-${cat.color}">${item.date}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += '</div>';
+            }
+
+            detailEl.innerHTML = html;
+        }
+    } catch (error) {
+        console.error('加载行业详情失败:', error);
+        detailEl.innerHTML = '<p class="text-danger">加载失败，请稍后重试</p>';
+    }
+}
+
+async function collectIndustryNews() {
+    if (!confirm('确定要立即采集所有行业的情报吗？此操作可能需要几分钟。')) {
+        return;
+    }
+
+    try {
+        const response = await axios.post('/api/industry/collect');
+        if (response.data.success) {
+            alert('行业情报采集已启动！\n' + response.data.message);
+            setTimeout(() => {
+                loadAllIndustriesSummary();
+            }, 3000);
+        }
+    } catch (error) {
+        alert('采集失败: ' + error.message);
+    }
+}
+
+async function generateIndustryReport() {
+    alert('行业周报生成功能开发中...');
+}
+</script>
+{% endblock %}
