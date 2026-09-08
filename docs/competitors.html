@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}竞品列表 - 竞品监测平台{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-list-ul"></i> 竞品列表
+                </h5>
+                <div>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="filterByCategory('all')">全部</button>
+                    <button class="btn btn-sm btn-outline-info" onclick="filterByCategory('国际')">国际</button>
+                    <button class="btn btn-sm btn-outline-success" onclick="filterByCategory('国内')">国内</button>
+                    <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('本品')">本品</button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="competitors-table">
+                        <thead>
+                            <tr>
+                                <th>竞品名称</th>
+                                <th>分类</th>
+                                <th>平台</th>
+                                <th>最新版本</th>
+                                <th>最近更新</th>
+                                <th>30天更新次数</th>
+                                <th>评分</th>
+                                <th>排名</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="competitors-tbody">
+                            <tr>
+                                <td colspan="9" class="text-center">
+                                    <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">加载中...</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let allCompetitors = [];
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadCompetitors();
+});
+
+async function loadCompetitors() {
+    try {
+        const response = await axios.get('/api/competitors');
+        if (response.data.success) {
+            allCompetitors = response.data.data;
+            renderCompetitors(allCompetitors);
+        }
+    } catch (error) {
+        console.error('加载竞品列表失败:', error);
+        document.getElementById('competitors-tbody').innerHTML =
+            '<tr><td colspan="9" class="text-danger text-center">加载失败，请刷新重试</td></tr>';
+    }
+}
+
+function renderCompetitors(competitors) {
+    const tbody = document.getElementById('competitors-tbody');
+
+    if (competitors.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted">暂无数据</td></tr>';
+        return;
+    }
+
+    let html = '';
+    competitors.forEach(comp => {
+        const categoryBadge = comp.category === '本品' ? 'primary' :
+                            comp.category === '国内' ? 'success' : 'info';
+        const lastUpdateDate = comp.last_update_date ? new Date(comp.last_update_date).toLocaleDateString('zh-CN') : 'N/A';
+
+        html += `
+            <tr data-category="${comp.category}">
+                <td><strong>${comp.name}</strong><br><small class="text-muted">${comp.name_en}</small></td>
+                <td><span class="badge bg-${categoryBadge}">${comp.category}</span></td>
+                <td><small>${comp.platforms || 'N/A'}</small></td>
+                <td>${comp.latest_version}</td>
+                <td>${lastUpdateDate}</td>
+                <td>${comp.updates_30d || 0}</td>
+                <td>${comp.rating ? comp.rating.toFixed(1) + ' ⭐' : 'N/A'}</td>
+                <td>${comp.ranking || 'N/A'}</td>
+                <td>
+                    <a href="/competitor/${comp.id}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-eye"></i> 详情
+                    </a>
+                </td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+}
+
+function filterByCategory(category) {
+    if (category === 'all') {
+        renderCompetitors(allCompetitors);
+    } else {
+        const filtered = allCompetitors.filter(c => c.category === category);
+        renderCompetitors(filtered);
+    }
+}
+</script>
+{% endblock %}

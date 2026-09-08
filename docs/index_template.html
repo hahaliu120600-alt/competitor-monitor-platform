@@ -1,0 +1,295 @@
+{% extends "base.html" %}
+
+{% block title %}概览 - 竞品监测平台{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- KPI卡片 -->
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-subtitle mb-2">监测竞品</h6>
+                        <h2 class="card-title mb-0" id="total-competitors">-</h2>
+                    </div>
+                    <i class="bi bi-eye fs-1"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-subtitle mb-2">本周更新</h6>
+                        <h2 class="card-title mb-0" id="updates-this-week">-</h2>
+                    </div>
+                    <i class="bi bi-arrow-repeat fs-1"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-subtitle mb-2">公司动态</h6>
+                        <h2 class="card-title mb-0" id="news-this-week">-</h2>
+                    </div>
+                    <i class="bi bi-newspaper fs-1"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-subtitle mb-2">合作信息</h6>
+                        <h2 class="card-title mb-0" id="partnerships-this-week">-</h2>
+                    </div>
+                    <i class="bi bi-people fs-1"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 快速操作 -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">快速操作</h5>
+                <button class="btn btn-primary" onclick="triggerCollection()">
+                    <i class="bi bi-arrow-clockwise"></i> 立即采集数据
+                </button>
+                <button class="btn btn-success" onclick="generateReport()">
+                    <i class="bi bi-file-earmark-plus"></i> 生成周报
+                </button>
+                <a href="/reports" class="btn btn-info">
+                    <i class="bi bi-folder"></i> 查看历史报告
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- 最新动态 -->
+    <div class="col-md-8 mb-4">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-clock-history"></i> 最新动态
+                </h5>
+            </div>
+            <div class="card-body" style="max-height: 600px; overflow-y: auto;">
+                <div id="recent-activities">
+                    <div class="text-center text-muted py-5">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">加载中...</span>
+                        </div>
+                        <p class="mt-2">正在加载数据...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 竞品快览 -->
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-list-check"></i> 竞品快览
+                </h5>
+            </div>
+            <div class="card-body" style="max-height: 600px; overflow-y: auto;">
+                <div id="competitors-summary">
+                    <div class="text-center text-muted py-5">
+                        <div class="spinner-border spinner-border-sm" role="status"></div>
+                        <p class="mt-2">加载中...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', function() {
+    loadDashboardData();
+    loadRecentActivities();
+    loadCompetitorsSummary();
+
+    // 每30秒刷新一次最后更新时间
+    setInterval(updateLastCollectionTime, 30000);
+});
+
+// 加载Dashboard数据
+async function loadDashboardData() {
+    try {
+        const response = await axios.get('/api/dashboard/summary');
+        if (response.data.success) {
+            const data = response.data.data;
+            document.getElementById('total-competitors').textContent = data.total_competitors;
+            document.getElementById('updates-this-week').textContent = data.updates_this_week;
+            document.getElementById('news-this-week').textContent = data.news_this_week;
+            document.getElementById('partnerships-this-week').textContent = data.partnerships_this_week;
+            document.getElementById('last-update-time').textContent = '最后采集: ' + data.last_collection_time;
+        }
+    } catch (error) {
+        console.error('加载Dashboard数据失败:', error);
+    }
+}
+
+// 加载最近活动
+async function loadRecentActivities() {
+    try {
+        const response = await axios.get('/api/activities/recent?days=7&limit=20');
+        if (response.data.success) {
+            const activities = response.data.data;
+            const container = document.getElementById('recent-activities');
+
+            if (activities.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center py-5">暂无最近动态</p>';
+                return;
+            }
+
+            let html = '<div class="timeline">';
+            activities.forEach(activity => {
+                const date = new Date(activity.date);
+                const typeIcon = activity.type === 'update' ? 'arrow-repeat' : 'newspaper';
+                const typeColor = activity.type === 'update' ? 'success' : 'info';
+                const typeName = activity.type === 'update' ? '版本更新' : '公司动态';
+
+                html += `
+                    <div class="timeline-item mb-3 pb-3 border-bottom">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <span class="badge bg-${typeColor}">
+                                    <i class="bi bi-${typeIcon}"></i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong>${activity.competitor}</strong>
+                                        <span class="badge bg-light text-dark ms-2 small">${typeName}</span>
+                                    </div>
+                                    <small class="text-muted">${date.toLocaleDateString('zh-CN')}</small>
+                                </div>
+                                <div class="mt-2">
+                                    <strong>${activity.title}</strong>
+                                    ${activity.description ? '<p class="text-muted small mb-1 mt-1">' + activity.description + '</p>' : ''}
+                                    ${activity.url ? `
+                                        <div class="mt-2">
+                                            <a href="${activity.url}" target="_blank" class="small text-primary text-decoration-none">
+                                                <i class="bi bi-link-45deg"></i> 查看来源
+                                                <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.8em;"></i>
+                                            </a>
+                                        </div>
+                                    ` : '<span class="small text-muted"><i class="bi bi-info-circle"></i> 暂无来源链接</span>'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+    } catch (error) {
+        console.error('加载最近活动失败:', error);
+        document.getElementById('recent-activities').innerHTML =
+            '<p class="text-danger text-center py-5">加载失败，请刷新重试</p>';
+    }
+}
+
+// 加载竞品摘要
+async function loadCompetitorsSummary() {
+    try {
+        const response = await axios.get('/api/competitors');
+        if (response.data.success) {
+            const competitors = response.data.data;
+            const container = document.getElementById('competitors-summary');
+
+            let html = '<div class="list-group list-group-flush">';
+            competitors.forEach(comp => {
+                const categoryBadge = comp.category === '本品' ? 'primary' :
+                                    comp.category === '国内' ? 'success' : 'info';
+
+                html += `
+                    <a href="/competitor/${comp.id}" class="list-group-item list-group-item-action">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>${comp.name}</strong>
+                                <span class="badge bg-${categoryBadge} ms-2">${comp.category}</span>
+                                <br>
+                                <small class="text-muted">
+                                    ${comp.latest_version ? 'v' + comp.latest_version : '暂无版本'}
+                                    ${comp.updates_30d > 0 ? ' | ' + comp.updates_30d + '次更新/30天' : ''}
+                                </small>
+                            </div>
+                            <i class="bi bi-chevron-right"></i>
+                        </div>
+                    </a>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+    } catch (error) {
+        console.error('加载竞品摘要失败:', error);
+    }
+}
+
+// 触发数据采集
+async function triggerCollection() {
+    if (!confirm('确定要立即触发数据采集吗？此操作可能需要几分钟时间。')) {
+        return;
+    }
+
+    try {
+        const response = await axios.post('/api/collection/trigger');
+        if (response.data.success) {
+            alert('数据采集已启动，请稍后刷新页面查看结果');
+        }
+    } catch (error) {
+        alert('触发采集失败: ' + error.message);
+    }
+}
+
+// 生成周报
+async function generateReport() {
+    if (!confirm('确定要生成周报吗？')) {
+        return;
+    }
+
+    try {
+        const response = await axios.post('/api/reports/generate');
+        if (response.data.success) {
+            alert('周报生成成功！\n路径: ' + response.data.path);
+        }
+    } catch (error) {
+        alert('生成周报失败: ' + error.message);
+    }
+}
+
+// 更新最后采集时间
+function updateLastCollectionTime() {
+    loadDashboardData();
+}
+</script>
+{% endblock %}

@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}趋势分析 - 竞品监测平台{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-graph-up"></i> 行业趋势分析
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">
+                    <i class="bi bi-info-circle"></i>
+                    趋势分析功能需要持续的市场数据积累。当前系统已就绪，随着数据的增加，将自动生成趋势图表。
+                </p>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>功能说明</h6>
+                        <ul>
+                            <li>评分趋势：展示各竞品的用户评分变化</li>
+                            <li>排名趋势：追踪应用商店排名波动</li>
+                            <li>下载量趋势：监测市场热度变化</li>
+                            <li>更新频率：分析产品迭代节奏</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>数据来源</h6>
+                        <ul>
+                            <li>系统自动采集的市场数据</li>
+                            <li>手动录入的补充数据</li>
+                            <li>历史周报中的记录</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <canvas id="trendChart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h6 class="mb-0">更新频率对比（近30天）</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="updateFrequencyChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h6 class="mb-0">功能热点分析</h6>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="bi bi-lightbulb"></i>
+                    基于最近采集的App更新信息，识别竞品关注的功能方向
+                </div>
+                <div id="featureKeywords">
+                    <span class="badge bg-primary me-2 mb-2">AI预报</span>
+                    <span class="badge bg-primary me-2 mb-2">分钟级</span>
+                    <span class="badge bg-primary me-2 mb-2">健康场景</span>
+                    <span class="badge bg-primary me-2 mb-2">过敏指数</span>
+                    <span class="badge bg-primary me-2 mb-2">地图雷达</span>
+                    <span class="badge bg-primary me-2 mb-2">台风路径</span>
+                    <span class="badge bg-primary me-2 mb-2">极端天气预警</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// 示例趋势图
+document.addEventListener('DOMContentLoaded', function() {
+    initTrendChart();
+    initUpdateFrequencyChart();
+});
+
+function initTrendChart() {
+    const ctx = document.getElementById('trendChart');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['7天前', '6天前', '5天前', '4天前', '3天前', '2天前', '昨天', '今天'],
+            datasets: [{
+                label: '行业平均评分',
+                data: [4.2, 4.3, 4.2, 4.4, 4.3, 4.5, 4.4, 4.5],
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: true
+                }
+            }
+        }
+    });
+}
+
+function initUpdateFrequencyChart() {
+    const ctx = document.getElementById('updateFrequencyChart');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['The Weather Channel', 'AccuWeather', 'Windy', '天气通', '墨迹天气'],
+            datasets: [{
+                label: '更新次数',
+                data: [3, 2, 5, 1, 4],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.5)',
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(255, 206, 86, 0.5)',
+                    'rgba(75, 192, 192, 0.5)',
+                    'rgba(153, 102, 255, 0.5)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+</script>
+{% endblock %}
